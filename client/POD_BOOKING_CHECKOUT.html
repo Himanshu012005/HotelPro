@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HotelPro | Grand Suite Reservation & Checkout</title>
+  <meta name="description" content="Booking.com inspired clean, professional hotel room reservation and instant confirmation checkout.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bkg-blue: #003580;
+      --bkg-blue-hover: #00224f;
+      --bkg-blue-accent: #006ce4;
+      --bkg-yellow: #febb02;
+      --bkg-green: #008009;
+      --bkg-green-light: #e8f5e9;
+      --bkg-gray-bg: #f5f7fa;
+      --bkg-border: #e0e6ed;
+      --text-dark: #1a1a1a;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --shadow-soft: 0 4px 20px rgba(0, 53, 128, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bkg-gray-bg);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* Booking.com Navy Header */
+    .bkg-navbar {
+      background: var(--bkg-blue);
+      color: #ffffff;
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    .bkg-nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bkg-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .brand-logo-text {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .brand-logo-text span {
+      color: var(--bkg-yellow);
+    }
+    .brand-tag {
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-bkg-back {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-bkg-back:hover {
+      background: #ffffff;
+      color: var(--bkg-blue);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .breadcrumbs a {
+      color: var(--bkg-blue-accent);
+      text-decoration: none;
+    }
+    .breadcrumbs a:hover {
+      text-decoration: underline;
+    }
+
+    /* Hotel Header Card */
+    .prop-header-card {
+      background: #ffffff;
+      border: 1px solid var(--bkg-border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+    .genius-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bkg-blue);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .genius-badge span {
+      color: var(--bkg-yellow);
+    }
+    .prop-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .prop-location {
+      font-size: 13px;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Rating Bubble */
+    .rating-badge-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bkg-rating-text {
+      text-align: right;
+    }
+    .bkg-grade {
+      font-weight: 800;
+      font-size: 15px;
+      color: #0f172a;
+    }
+    .bkg-reviews-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .bkg-rating-score {
+      background: var(--bkg-blue);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 18px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* 5-Photo Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: 170px 170px;
+      gap: 10px;
+      margin-bottom: 24px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .gallery-main {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      position: relative;
+      cursor: pointer;
+    }
+    .gallery-main img, .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .gallery-main:hover img, .gallery-item:hover img {
+      transform: scale(1.02);
+    }
+
+    /* 2-Column Booking Layout */
+    .booking-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .bkg-card {
+      background: #ffffff;
+      border: 1px solid var(--bkg-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+    .card-heading {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 14px;
+    }
+
+    /* Inclusions ribbon */
+    .inclusions-ribbon {
+      background: var(--bkg-green-light);
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--bkg-green);
+      margin-bottom: 20px;
+    }
+
+    /* Room Key Highlights */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .spec-cell {
+      background: #f8fafc;
+      border: 1px solid var(--bkg-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .spec-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .spec-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Addon tiles */
+    .addon-tile {
+      border: 1px solid var(--bkg-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .addon-tile:hover {
+      border-color: var(--bkg-blue-accent);
+      background: #f0f7ff;
+    }
+    .addon-tile.selected {
+      border-color: var(--bkg-blue-accent);
+      background: #eef6ff;
+    }
+    .addon-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .addon-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .addon-cost {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--bkg-blue-accent);
+    }
+
+    /* Amenities Grid */
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .amenity-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Sticky Right Summary Widget */
+    .sticky-booking-widget {
+      position: sticky;
+      top: 80px;
+      background: #ffffff;
+      border: 2px solid var(--bkg-blue-accent);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 108, 228, 0.12);
+    }
+    .price-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--bkg-border);
+      margin-bottom: 16px;
+    }
+    .old-rate {
+      font-size: 14px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+    .live-rate {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+    }
+    .deal-tag {
+      background: var(--bkg-green-light);
+      color: var(--bkg-green);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #c8e6c9;
+    }
+
+    /* Duration Selector */
+    .durations-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .dur-chip {
+      background: #f8fafc;
+      border: 1px solid var(--bkg-border);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sub);
+      transition: all 0.2s;
+    }
+    .dur-chip.active, .dur-chip:hover {
+      background: var(--bkg-blue);
+      color: #ffffff;
+      border-color: var(--bkg-blue);
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+    }
+    .field-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .field-input {
+      width: 100%;
+      border: 1px solid var(--bkg-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-dark);
+      outline: none;
+      background: #fff;
+    }
+    .field-input:focus {
+      border-color: var(--bkg-blue-accent);
+      box-shadow: 0 0 0 3px rgba(0, 108, 228, 0.12);
+    }
+
+    .btn-bkg-reserve {
+      background: var(--bkg-blue-accent);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 108, 228, 0.3);
+      transition: all 0.2s;
+      margin-top: 14px;
+    }
+    .btn-bkg-reserve:hover {
+      background: var(--bkg-blue);
+      transform: translateY(-1px);
+    }
+
+    /* Modal */
+    .pay-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .pay-overlay.active {
+      display: flex;
+    }
+    .pay-modal-box {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      max-width: 520px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    /* Confirmation Banner */
+    .confirmation-banner {
+      display: none;
+      background: #ffffff;
+      border: 2px solid var(--bkg-green);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    @media (max-width: 992px) {
+      .booking-grid-2col {
+        grid-template-columns: 1fr;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 200px 120px;
+      }
+      .gallery-main {
+        grid-column: 1 / 3;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="bkg-navbar">
+    <div class="bkg-nav-inner">
+      <a href="CYBERLODGE_SMART_HOTEL.html" class="bkg-brand">
+        <div class="brand-logo-text">Hotel<span>Pro</span></div>
+        <div class="brand-tag">EXECUTIVE STAYS & SUITES</div>
+      </a>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="CYBERLODGE_SMART_HOTEL.html" class="btn-bkg-back">
+          ← Back to Hotels List
+        </a>
+        <a href="MY_BOOKINGS_CYBER.html" class="btn-bkg-back" style="background: rgba(254, 187, 2, 0.2); border-color: var(--bkg-yellow); color: #fff;">
+          📑 My Bookings
+        </a>
+        <a href="LOGIN_CYBER.html" class="btn-bkg-back">
+          👤 Sign In
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+      <a href="CYBERLODGE_SMART_HOTEL.html">Home</a> ➔ 
+      <a href="CYBERLODGE_SMART_HOTEL.html#stays-catalog">Tokyo Hotels</a> ➔ 
+      <span id="crumb-pod-title" style="font-weight: 700; color: #0f172a;">HotelPro Grand Executive Suite</span>
+    </div>
+
+    <!-- Header Details Card -->
+    <div class="prop-header-card">
+      <div>
+        <div class="genius-badge">
+          <span>●</span> BOOKING.COM GENIUS LEVEL 2 (20% SAVINGS APPLIED)
+        </div>
+        <h1 class="prop-title" id="page-pod-title">
+          HotelPro Grand Central Executive Suite
+        </h1>
+        <div class="prop-location">
+          <span>📍</span>
+          <span id="page-pod-location">Downtown Central, Tokyo (200m from Subway Station)</span>
+          <span style="color: var(--bkg-blue-accent); font-weight: 700; cursor: pointer; margin-left: 8px;">Show on Map</span>
+        </div>
+      </div>
+
+      <div class="rating-badge-block">
+        <div class="bkg-rating-text">
+          <div class="bkg-grade">Exceptional</div>
+          <div class="bkg-reviews-count">1,840 Verified Reviews</div>
+        </div>
+        <div class="bkg-rating-score">
+          9.6
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Photo Gallery -->
+    <div class="gallery-grid">
+      <div class="gallery-main" onclick="switchMainPhoto(0)">
+        <img id="main-pod-photo" src="https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80" alt="Executive Suite">
+      </div>
+      <div class="gallery-item" onclick="switchMainPhoto(1)">
+        <img src="https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=600&q=80" alt="Deluxe Room">
+      </div>
+      <div class="gallery-item" onclick="switchMainPhoto(2)">
+        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Penthouse View">
+      </div>
+      <div class="gallery-item" onclick="switchMainPhoto(3)">
+        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=600&q=80" alt="Work Lounge">
+      </div>
+      <div class="gallery-item" onclick="switchMainPhoto(4)">
+        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80" alt="Ensuite Marble Bath">
+      </div>
+    </div>
+
+    <!-- 2-Column Booking Layout -->
+    <div class="booking-grid-2col">
+
+      <!-- Left Column Details -->
+      <div>
+        <div class="inclusions-ribbon">
+          <div>✓ Free cancellation anytime with 100% refund</div>
+          <div>✓ No prepayment required – Pay at the property</div>
+          <div>✓ Hot Buffet Breakfast included</div>
+          <div>✓ Free high-speed WiFi throughout</div>
+        </div>
+
+        <div class="bkg-card">
+          <h3 class="card-heading">Room Overview & Highlights</h3>
+          <div class="specs-grid">
+            <div class="spec-cell">
+              <div class="spec-title">Room Size</div>
+              <div class="spec-val">55 m² (Spacious)</div>
+            </div>
+            <div class="spec-cell">
+              <div class="spec-title">Bed Type</div>
+              <div class="spec-val">1 Extra-Large King</div>
+            </div>
+            <div class="spec-cell">
+              <div class="spec-title">View</div>
+              <div class="spec-val">City Skyline View</div>
+            </div>
+            <div class="spec-cell">
+              <div class="spec-title">Bath</div>
+              <div class="spec-val">Marble Tub & Shower</div>
+            </div>
+          </div>
+          <p id="page-pod-desc" style="color: var(--text-sub); font-size: 14px; line-height: 1.7;">
+            Spacious 55m² executive suite with panoramic city skyline view, King-size orthopedic mattress, marble ensuite bathtub, dedicated high-speed workstation, and Nespresso bar.
+          </p>
+        </div>
+
+        <!-- Optional Add-ons -->
+        <div class="bkg-card">
+          <h3 class="card-heading">Enhance Your Stay (Optional Add-ons)</h3>
+          
+          <div class="addon-tile" onclick="toggleAddon(this, 450, 'Hot Gourmet Buffet Breakfast')">
+            <div>
+              <div class="addon-name">🍳 Hot Gourmet Buffet Breakfast & Barista Coffee</div>
+              <div class="addon-desc">Freshly prepared eggs, artisan pastries, tropical fruits, and specialty espresso.</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="addon-cost">+₹450</div>
+              <div style="font-size: 11px; color: var(--text-muted);">+ Tap to add</div>
+            </div>
+          </div>
+
+          <div class="addon-tile" onclick="toggleAddon(this, 950, 'Private Airport Chauffeur Transfer')">
+            <div>
+              <div class="addon-name">🚗 Private Airport Chauffeur Transfer (One-Way)</div>
+              <div class="addon-desc">Mercedes E-Class pickup with luggage assistance directly to hotel reception.</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="addon-cost">+₹950</div>
+              <div style="font-size: 11px; color: var(--text-muted);">+ Tap to add</div>
+            </div>
+          </div>
+
+          <div class="addon-tile" onclick="toggleAddon(this, 600, 'Guaranteed Late Check-out')">
+            <div>
+              <div class="addon-name">⏰ Guaranteed Late Check-out until 4:00 PM</div>
+              <div class="addon-desc">Enjoy your room longer on departure day with zero rush.</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="addon-cost">+₹600</div>
+              <div style="font-size: 11px; color: var(--text-muted);">+ Tap to add</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="bkg-card">
+          <h3 class="card-heading">Hotel Features & Amenities</h3>
+          <div class="amenities-grid">
+            <div class="amenity-chip"><span>📶</span><span>Free Ultra-Fast WiFi</span></div>
+            <div class="amenity-chip"><span>🏊</span><span>Indoor Heated Pool</span></div>
+            <div class="amenity-chip"><span>☕</span><span>Nespresso Coffee Maker</span></div>
+            <div class="amenity-chip"><span>❄️</span><span>Individual Climate Control</span></div>
+            <div class="amenity-chip"><span>📺</span><span>65" 4K Smart TV</span></div>
+            <div class="amenity-chip"><span>🏋️</span><span>24-Hour Fitness Gym</span></div>
+            <div class="amenity-chip"><span>🚿</span><span>Luxury Rain Shower</span></div>
+            <div class="amenity-chip"><span>🛡️</span><span>In-Room Electronic Safe</span></div>
+            <div class="amenity-chip"><span>👔</span><span>Complimentary Garment Press</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Sticky Reservation Widget -->
+      <div>
+        <div class="sticky-booking-widget">
+          
+          <div class="price-strip">
+            <div>
+              <div class="old-rate" id="bkg-old-rate">₹4,374</div>
+              <div class="live-rate" id="bkg-live-rate">₹3,499</div>
+              <div style="font-size: 11px; color: var(--text-muted);">per night · includes taxes & fees</div>
+            </div>
+            <div class="deal-tag">20% GENIUS DEAL</div>
+          </div>
+
+          <!-- Nights Selector -->
+          <div class="field-label">Select Number of Nights</div>
+          <div class="durations-picker">
+            <div class="dur-chip active" onclick="setStayNights(1, this)">1 Night (₹3,499)</div>
+            <div class="dur-chip" onclick="setStayNights(2, this)">2 Nights (₹6,998)</div>
+            <div class="dur-chip" onclick="setStayNights(3, this)">3 Nights (₹9,890)</div>
+            <div class="dur-chip" onclick="setStayNights(7, this)">7 Nights (₹21,990)</div>
+          </div>
+
+          <!-- Date Selector -->
+          <div class="field-group">
+            <label class="field-label">Check-in Date</label>
+            <input type="date" id="bkg-date-input" class="field-input" value="2026-10-29">
+          </div>
+
+          <!-- Guest Details Form -->
+          <div class="field-group">
+            <label class="field-label">Lead Guest Full Name</label>
+            <input type="text" id="bkg-guest-name" class="field-input" value="Himanshu Sanodiya" placeholder="e.g. John Doe">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Email Address (For Booking Voucher)</label>
+            <input type="email" id="bkg-guest-email" class="field-input" value="himanshu.travel@gmail.com" placeholder="name@example.com">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Mobile Number</label>
+            <input type="tel" id="bkg-guest-phone" class="field-input" value="+91 98765 43210" placeholder="+91 98765 43210">
+          </div>
+
+          <!-- Price Summary -->
+          <div style="border-top: 1px solid var(--bkg-border); padding-top: 12px; margin-top: 14px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text-sub);">
+              <span>Room Subtotal (<span id="bkg-nights-count">1</span> Night):</span>
+              <span id="bkg-base-bill" style="font-weight: 700; color: #0f172a;">₹3,499</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text-sub);">
+              <span>Selected Add-ons:</span>
+              <span id="bkg-addons-bill" style="font-weight: 700; color: #0f172a;">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: #0f172a; border-top: 1px solid var(--bkg-border); padding-top: 8px;">
+              <span>Total Payable:</span>
+              <span id="bkg-grand-bill" style="color: var(--bkg-blue-accent);">₹3,499</span>
+            </div>
+          </div>
+
+          <button class="btn-bkg-reserve" onclick="openPaymentModal()">
+            RESERVE WITH GENIUS DEAL ➔
+          </button>
+          <div style="text-align: center; font-size: 11px; color: var(--bkg-green); font-weight: 700; margin-top: 8px;">
+            ✓ Free cancellation up to 24 hours prior to check-in
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Digital Booking Confirmation Voucher Banner -->
+    <div class="confirmation-banner" id="pod-confirmation-banner">
+      <div style="font-size: 40px; margin-bottom: 8px;">🎉</div>
+      <h2 style="font-size: 24px; font-weight: 800; color: var(--bkg-green); margin-bottom: 4px;">
+        Reservation Confirmed!
+      </div>
+      <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 16px;">
+        Your booking voucher has been issued and sent to your registered email address.
+      </p>
+
+      <div style="background: #f8fafc; border: 1px solid var(--bkg-border); border-radius: 8px; padding: 20px; max-width: 580px; margin: 0 auto 20px; text-align: left; font-size: 13px; line-height: 1.8;">
+        <div><strong>Booking Reference ID:</strong> <span id="conf-res-id" style="color: var(--bkg-blue-accent); font-weight: 700;">#HP-BKG-99201</span></div>
+        <div><strong>Hotel & Suite:</strong> <span id="conf-pod-name">HotelPro Grand Central Executive Suite</span></div>
+        <div><strong>Lead Guest:</strong> <span id="conf-alias">Himanshu Sanodiya</span></div>
+        <div><strong>Payment Status:</strong> <span style="font-weight: 700; color: var(--bkg-green);">Confirmed & Guaranteed</span></div>
+        <div><strong>Total Paid:</strong> <span id="conf-total" style="color: var(--bkg-green); font-weight: 700;">₹3,499</span></div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-bkg-reserve" style="width: auto; padding: 10px 24px;" onclick="window.print()">
+          🖨️ Print Booking Voucher
+        </button>
+        <button class="btn-bkg-reserve" style="width: auto; padding: 10px 24px; background: #008009;" onclick="window.location.href='MY_BOOKINGS_CYBER.html'">
+          📑 View in My Bookings
+        </button>
+        <button class="btn-bkg-back" style="background: #f1f5f9; color: var(--text-dark); border-color: #cbd5e1;" onclick="window.location.href='CYBERLODGE_SMART_HOTEL.html'">
+          Return to Stays List
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Payment Gateway Modal -->
+  <div class="pay-overlay" id="payment-modal">
+    <div class="pay-modal-box">
+      <button style="position: absolute; top: 16px; right: 16px; border: none; background: none; font-size: 20px; cursor: pointer;" onclick="closePaymentModal()">✕</button>
+      
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--bkg-blue-accent); font-weight: 800; margin-bottom: 6px;">
+        PAYMENT CONFIRMATION
+      </div>
+      <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 16px;">
+        Complete Your Hotel Reservation
+      </h3>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <button class="dur-chip active" style="flex: 1;">Instant UPI / QR</button>
+        <button class="dur-chip" style="flex: 1;">Credit / Debit Card</button>
+        <button class="dur-chip" style="flex: 1;">Pay at Hotel</button>
+      </div>
+
+      <div style="background: #f8fafc; border-radius: 8px; padding: 18px; text-align: center; margin-bottom: 18px;">
+        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 10px;">Scan to Complete Booking:</div>
+        <div style="width: 120px; height: 120px; background: #fff; border: 2px dashed #0284c7; border-radius: 8px; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+          📱
+        </div>
+        <div style="font-size: 12px; color: var(--bkg-green); font-weight: 700; margin-top: 8px;">
+          UPI ID: hotelpro.payments@icici (Zero Convenience Fees)
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--bkg-border); padding-top: 14px; margin-bottom: 18px;">
+        <div style="font-size: 13px; color: var(--text-sub);">Total Settlement:</div>
+        <div id="modal-pay-num" style="font-size: 22px; font-weight: 800; color: #0f172a;">₹3,499</div>
+      </div>
+
+      <button class="btn-bkg-reserve" onclick="executePayment()">
+        COMPLETE RESERVATION ✓
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const roomsDatabase = {
+      'pod-alpha': {
+        title: 'HotelPro Grand Central Executive Suite',
+        location: 'Downtown Central, Tokyo (200m from Subway Station)',
+        price: 3499,
+        desc: 'Spacious 55m² executive suite with panoramic city skyline view, King-size orthopedic mattress, marble ensuite bathtub, dedicated high-speed workstation, and Nespresso bar.',
+        images: [
+          'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80'
+        ]
+      },
+      'pod-nomad': {
+        title: 'HotelPro Premier Deluxe King Room',
+        location: 'Shibuya Crossing District, Tokyo (150m from Station)',
+        price: 2899,
+        desc: 'Modern, quiet city sanctuary with plush King bedding, soundproof double-glazed windows, ergonomic Herman Miller seating, rain shower, and 65-inch Smart 4K TV.',
+        images: [
+          'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80'
+        ]
+      },
+      'pod-zenith': {
+        title: 'HotelPro Royal Skyview Penthouse Suite',
+        location: 'Shinjuku Skyline Heights, Tokyo (Top 42nd Floor)',
+        price: 4999,
+        desc: 'Expansive 85m² two-story penthouse suite with private rooftop terrace, open jacuzzi overlooking the city, 24-hour butler service, and complimentary champagne breakfast.',
+        images: [
+          'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80'
+        ]
+      }
+    };
+
+    let activeRoom = roomsDatabase['pod-alpha'];
+    let selectedNights = 1;
+    let baseRatePerNight = 3499;
+    let addonsSum = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomId = urlParams.get('id') || 'pod-alpha';
+      if (roomsDatabase[roomId]) {
+        activeRoom = roomsDatabase[roomId];
+        baseRatePerNight = activeRoom.price;
+      }
+
+      document.getElementById('crumb-pod-title').textContent = activeRoom.title;
+      document.getElementById('page-pod-title').textContent = activeRoom.title;
+      document.getElementById('page-pod-location').textContent = activeRoom.location;
+      document.getElementById('page-pod-desc').textContent = activeRoom.desc;
+      document.getElementById('main-pod-photo').src = activeRoom.images[0];
+
+      recalculateBill();
+    });
+
+    function switchMainPhoto(idx) {
+      if (activeRoom.images && activeRoom.images[idx]) {
+        document.getElementById('main-pod-photo').src = activeRoom.images[idx];
+      }
+    }
+
+    function setStayNights(nights, elem) {
+      selectedNights = nights;
+      document.querySelectorAll('.dur-chip').forEach(c => c.classList.remove('active'));
+      elem.classList.add('active');
+      recalculateBill();
+    }
+
+    function toggleAddon(elem, price, name) {
+      elem.classList.toggle('selected');
+      if (elem.classList.contains('selected')) {
+        addonsSum += price;
+      } else {
+        addonsSum -= price;
+      }
+      recalculateBill();
+    }
+
+    function recalculateBill() {
+      const subtotal = baseRatePerNight * selectedNights;
+      const total = subtotal + addonsSum;
+
+      document.getElementById('bkg-old-rate').textContent = `₹${Math.round(baseRatePerNight * 1.25).toLocaleString('en-IN')}`;
+      document.getElementById('bkg-live-rate').textContent = `₹${baseRatePerNight.toLocaleString('en-IN')}`;
+      document.getElementById('bkg-nights-count').textContent = selectedNights;
+      document.getElementById('bkg-base-bill').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+      document.getElementById('bkg-addons-bill').textContent = `₹${addonsSum.toLocaleString('en-IN')}`;
+      document.getElementById('bkg-grand-bill').textContent = `₹${total.toLocaleString('en-IN')}`;
+      document.getElementById('modal-pay-num').textContent = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    function openPaymentModal() {
+      document.getElementById('payment-modal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('payment-modal').classList.remove('active');
+    }
+
+    function executePayment() {
+      closePaymentModal();
+      const guestName = document.getElementById('bkg-guest-name').value;
+      const total = document.getElementById('bkg-grand-bill').textContent;
+
+      document.getElementById('conf-res-id').textContent = '#HP-BKG-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('conf-pod-name').textContent = activeRoom.title;
+      document.getElementById('conf-alias').textContent = guestName;
+      document.getElementById('conf-total').textContent = total;
+
+      document.getElementById('pod-confirmation-banner').style.display = 'block';
+      document.getElementById('pod-confirmation-banner').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

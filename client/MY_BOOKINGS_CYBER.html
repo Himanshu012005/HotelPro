@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HotelPro | My Bookings & Trips</title>
+  <meta name="description" content="View confirmed hotel stays, print booking vouchers, download GST tax invoices, and manage free cancellations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-navy: #003580;
+      --primary-blue: #006ce4;
+      --accent-yellow: #febb02;
+      --tag-green: #008009;
+      --tag-green-bg: #e8f5e9;
+      --tag-red: #d32f2f;
+      --tag-red-bg: #ffebee;
+      --bg-page: #f5f7fa;
+      --bg-white: #ffffff;
+      --border-light: #e0e6ed;
+      --text-main: #1a1a1a;
+      --text-muted: #595959;
+      --text-light: #718096;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --shadow-card: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    /* Top Navigation */
+    .top-header {
+      background: var(--primary-navy);
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .brand-text {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .brand-text span {
+      color: var(--accent-yellow);
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .nav-link {
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+    }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .btn-new-stay {
+      background: var(--accent-yellow);
+      color: #000;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-new-stay:hover {
+      background: #e5a700;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    /* Dashboard Header */
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .dash-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .dash-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .user-badge {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--tag-green);
+      border-radius: 50%;
+    }
+
+    /* Tabs Bar */
+    .tabs-strip {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .tab-item {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .tab-item:hover {
+      color: var(--primary-navy);
+    }
+    .tab-item.active {
+      background: #ffffff;
+      color: var(--primary-blue);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .tab-count {
+      background: #e2e8f0;
+      color: var(--text-main);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+    .tab-item.active .tab-count {
+      background: var(--primary-blue);
+      color: #ffffff;
+    }
+
+    /* Simple Booking Card */
+    .trip-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 200px 1fr 220px;
+      gap: 20px;
+      align-items: center;
+    }
+    .trip-img {
+      width: 100%;
+      height: 130px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+    .trip-info h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .trip-ref {
+      font-size: 12px;
+      color: var(--primary-blue);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .trip-dates {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .status-tag.confirmed {
+      background: var(--tag-green-bg);
+      color: var(--tag-green);
+    }
+    .status-tag.cancelled {
+      background: var(--tag-red-bg);
+      color: var(--tag-red);
+    }
+
+    /* Actions Column */
+    .trip-actions {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .trip-price {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .trip-price span {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    .btn-action {
+      background: var(--primary-blue);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-action:hover {
+      background: var(--primary-navy);
+    }
+    .btn-action-outline {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action-outline:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+    }
+    .btn-action-cancel {
+      background: transparent;
+      border: none;
+      color: var(--tag-red);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 4px;
+    }
+    .btn-action-cancel:hover {
+      color: #b71c1c;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      max-width: 500px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    /* Toast */
+    .toast-alert {
+      display: none;
+      background: var(--tag-green-bg);
+      border: 1px solid #bbf7d0;
+      color: var(--tag-green);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .trip-card {
+        grid-template-columns: 1fr;
+      }
+      .trip-actions {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="header-inner">
+      <a href="CYBERLODGE_SMART_HOTEL.html" class="brand-logo">
+        <div class="brand-text">Hotel<span>Pro</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="CYBERLODGE_SMART_HOTEL.html" class="nav-link">Find Stays</a>
+        <a href="MY_BOOKINGS_CYBER.html" class="nav-link active">📑 My Bookings</a>
+        <a href="LOGIN_CYBER.html" class="nav-link">👤 Sign In</a>
+        <a href="POD_BOOKING_CHECKOUT.html" class="btn-new-stay">Book a Suite</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Toast Notification -->
+    <div class="toast-alert" id="cancel-toast">
+      <span>✅</span>
+      <span id="toast-text">Booking #HP-BKG-99201 successfully cancelled. Full refund of ₹6,998 has been initiated.</span>
+    </div>
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title">My Bookings & Trips</h1>
+        <p class="dash-sub">View confirmed hotel reservations, download invoices, or cancel anytime for free.</p>
+      </div>
+      <div class="user-badge">
+        <div class="user-dot"></div>
+        <div>Himanshu Sanodiya (himanshu.travel@gmail.com)</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-strip">
+      <button class="tab-item active" onclick="switchTab('upcoming', this)">
+        <span>Upcoming Stays</span>
+        <span class="tab-count" id="count-upcoming">1</span>
+      </button>
+      <button class="tab-item" onclick="switchTab('completed', this)">
+        <span>Completed Stays</span>
+        <span class="tab-count">2</span>
+      </button>
+      <button class="tab-item" onclick="switchTab('cancelled', this)">
+        <span>Cancelled</span>
+        <span class="tab-count" id="count-cancelled">0</span>
+      </button>
+    </div>
+
+    <!-- UPCOMING STAYS TAB -->
+    <div id="pane-upcoming">
+      <div class="trip-card" id="card-stay-01">
+        <img src="https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80" alt="Executive Suite" class="trip-img">
+        <div class="trip-info">
+          <div class="trip-ref">BOOKING ID: #HP-BKG-99201</div>
+          <h3>HotelPro Grand Central Executive Suite</h3>
+          <div class="trip-dates">
+            <span>📅</span>
+            <span>Check-in: Thu, 29 Oct 2026 — Check-out: Sat, 31 Oct 2026 (2 nights)</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span class="status-tag confirmed" id="status-badge-01">✓ Confirmed & Guaranteed</span>
+          </div>
+          <div style="font-size: 12px; color: var(--tag-green); font-weight: 600;">
+            ✓ Free cancellation until 28 Oct 2026, 11:59 PM
+          </div>
+        </div>
+        <div class="trip-actions">
+          <div class="trip-price">₹6,998 <span>Paid Online</span></div>
+          <button class="btn-action" onclick="window.print()">
+            🖨️ Print Voucher
+          </button>
+          <button class="btn-action-outline" onclick="openInvoiceModal('#HP-BKG-99201', 'HotelPro Grand Central Executive Suite', 6998)">
+            📄 GST Tax Invoice
+          </button>
+          <button class="btn-action-cancel" onclick="openCancelModal('#HP-BKG-99201', 'HotelPro Grand Central Executive Suite', 6998)">
+            Cancel Reservation
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETED STAYS TAB -->
+    <div id="pane-completed" style="display: none;">
+      <div class="trip-card">
+        <img src="https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=600&q=80" alt="Deluxe Room" class="trip-img">
+        <div class="trip-info">
+          <div class="trip-ref">BOOKING ID: #HP-BKG-77182</div>
+          <h3>HotelPro Premier Deluxe King Room</h3>
+          <div class="trip-dates">
+            <span>📅</span>
+            <span>Completed on 14 Oct 2026 (1 night)</span>
+          </div>
+          <div>
+            <span class="status-tag" style="background:#f1f5f9; color:#475569;">Completed Stay</span>
+          </div>
+        </div>
+        <div class="trip-actions">
+          <div class="trip-price">₹2,899 <span>Paid</span></div>
+          <button class="btn-action-outline" onclick="openInvoiceModal('#HP-BKG-77182', 'HotelPro Premier Deluxe King', 2899)">
+            📄 Download Invoice
+          </button>
+          <a href="POD_BOOKING_CHECKOUT.html?id=pod-nomad" class="btn-action" style="text-decoration: none; justify-content: center;">
+            Book Again
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANCELLED STAYS TAB -->
+    <div id="pane-cancelled" style="display: none;">
+      <div id="cancelled-empty" style="text-align: center; padding: 40px; color: var(--text-muted);">
+        <div style="font-size: 36px; margin-bottom: 8px;">🛡️</div>
+        <h3>No Cancelled Bookings</h3>
+        <p style="font-size: 13px; margin-top: 4px;">When you cancel any booking with free cancellation, it will show here.</p>
+      </div>
+      <div id="cancelled-items-container"></div>
+    </div>
+
+  </main>
+
+  <!-- Cancel Modal -->
+  <div class="modal-overlay" id="cancel-modal">
+    <div class="modal-card">
+      <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">
+        Cancel Hotel Reservation?
+      </h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+        You have free cancellation on this booking. A <strong>100% full refund of <span id="cancel-amt-text">₹6,998</span></strong> will be returned to your original payment method.
+      </p>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Reason for cancellation:</label>
+        <select style="width: 100%; border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; outline: none;">
+          <option>Change in travel plans</option>
+          <option>Found another hotel</option>
+          <option>Personal reasons</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button style="flex: 1; background: var(--tag-red); color: #fff; font-weight: 700; border: none; padding: 12px; border-radius: var(--radius-sm); cursor: pointer;" onclick="executeCancellation()">
+          Confirm Cancellation (100% Refund)
+        </button>
+        <button style="flex: 1; background: #f1f5f9; border: 1px solid var(--border-light); font-weight: 600; padding: 12px; border-radius: var(--radius-sm); cursor: pointer;" onclick="closeModal('cancel-modal')">
+          Keep Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GST Invoice Modal -->
+  <div class="modal-overlay" id="invoice-modal">
+    <div class="modal-card" style="max-width: 580px;">
+      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; margin-bottom: 14px;">
+        <div>
+          <div style="font-size: 18px; font-weight: 800; color: var(--primary-navy);">HOTELPRO HOSPITALITY LTD.</div>
+          <div style="font-size: 11px; color: var(--text-muted);">GSTIN: 07AAACH1234F1Z8 · Tax Invoice</div>
+        </div>
+        <div id="inv-ref" style="font-size: 12px; font-weight: 700; color: var(--primary-blue);">#INV-99201</div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6;">
+        <div><strong>Customer:</strong> Himanshu Sanodiya (himanshu.travel@gmail.com)</div>
+        <div><strong>Property:</strong> <span id="inv-hotel-name">HotelPro Grand Central Executive Suite</span></div>
+        <div><strong>HSN/SAC:</strong> 996311 (Hotel Accommodation)</div>
+      </div>
+
+      <table style="width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 18px;">
+        <tr style="border-bottom: 1px solid var(--border-light); color: var(--text-muted);">
+          <th style="text-align: left; padding: 6px 0;">Description</th>
+          <th style="text-align: right; padding: 6px 0;">Amount</th>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Room Charges (2 Nights)</td>
+          <td style="text-align: right; font-weight: 700;" id="inv-base">₹5,930</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">CGST @ 9%</td>
+          <td style="text-align: right;" id="inv-cgst">₹534</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">SGST @ 9%</td>
+          <td style="text-align: right;" id="inv-sgst">₹534</td>
+        </tr>
+        <tr style="border-top: 1px solid var(--border-light); font-size: 14px; font-weight: 800;">
+          <td style="padding: 10px 0;">Total Paid (Inclusive of GST)</td>
+          <td style="text-align: right; color: var(--tag-green);" id="inv-total">₹6,998</td>
+        </tr>
+      </table>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action" style="flex: 1;" onclick="window.print()">🖨️ Print Invoice</button>
+        <button class="btn-action-outline" style="flex: 1;" onclick="closeModal('invoice-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab, elem) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.getElementById('pane-upcoming').style.display = 'none';
+      document.getElementById('pane-completed').style.display = 'none';
+      document.getElementById('pane-cancelled').style.display = 'none';
+
+      elem.classList.add('active');
+      document.getElementById('pane-' + tab).style.display = 'block';
+    }
+
+    function openCancelModal(ref, name, amt) {
+      document.getElementById('cancel-amt-text').textContent = '₹' + amt.toLocaleString('en-IN');
+      document.getElementById('cancel-modal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function executeCancellation() {
+      closeModal('cancel-modal');
+
+      const badge = document.getElementById('status-badge-01');
+      badge.className = 'status-tag cancelled';
+      badge.textContent = 'Cancelled & 100% Refunded';
+
+      document.getElementById('count-upcoming').textContent = '0';
+      document.getElementById('count-cancelled').textContent = '1';
+
+      document.getElementById('cancelled-empty').style.display = 'none';
+      const container = document.getElementById('cancelled-items-container');
+      const clone = document.getElementById('card-stay-01').cloneNode(true);
+      clone.querySelector('.trip-actions').innerHTML = `
+        <div style="font-size: 14px; font-weight: 700; color: var(--tag-red);">₹6,998 Refunded</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Returned to original payment method</div>
+      `;
+      container.appendChild(clone);
+
+      const toast = document.getElementById('cancel-toast');
+      toast.style.display = 'flex';
+      toast.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openInvoiceModal(ref, name, amt) {
+      const base = Math.round(amt / 1.18);
+      const tax = Math.round((amt - base) / 2);
+
+      document.getElementById('inv-ref').textContent = '#INV-' + ref.replace('#HP-BKG-', '');
+      document.getElementById('inv-hotel-name').textContent = name;
+      document.getElementById('inv-base').textContent = '₹' + base.toLocaleString('en-IN');
+      document.getElementById('inv-cgst').textContent = '₹' + tax.toLocaleString('en-IN');
+      document.getElementById('inv-sgst').textContent = '₹' + tax.toLocaleString('en-IN');
+      document.getElementById('inv-total').textContent = '₹' + amt.toLocaleString('en-IN');
+
+      document.getElementById('invoice-modal').classList.add('active');
+    }
+  </script>
+</body>
+</html>
