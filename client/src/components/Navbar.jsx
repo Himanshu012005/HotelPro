@@ -57,6 +57,10 @@ export default function Navbar() {
               </Link>
             )}
 
+            <Link to="/login" className="text-white text-decoration-none small fw-semibold">
+              <i className="bi bi-box-arrow-in-right me-1"></i>Sign In
+            </Link>
+
             {user ? (
               <div className="dropdown">
                 <button
@@ -71,6 +75,11 @@ export default function Navbar() {
                 <ul className="dropdown-menu dropdown-menu-end shadow">
                   <li className="dropdown-item-text text-muted small">{user.email}</li>
                   <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <Link to="/login" className="dropdown-item">
+                      <i className="bi bi-box-arrow-in-right me-2"></i>Sign In / Switch Role
+                    </Link>
+                  </li>
                   <li>
                     <Link to="/my-bookings" className="dropdown-item">
                       <i className="bi bi-receipt me-2"></i>My Bookings & Invoices
