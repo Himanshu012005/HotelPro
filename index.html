@@ -822,7 +822,7 @@
   <!-- Top Booking.com Style Header -->
   <header class="top-header">
     <div class="header-inner">
-      <a href="CYBERLODGE_SMART_HOTEL.html" class="brand-logo">
+      <a href="index.html" class="brand-logo">
         <div class="brand-text">Hotel<span>Pro</span></div>
         <div class="brand-subtitle">EXECUTIVE STAYS & SUITES</div>
       </a>
@@ -834,7 +834,7 @@
         <a href="#reviews-section" class="nav-item">Reviews</a>
         <a href="#faq-section" class="nav-item">FAQ</a>
         <a href="MY_BOOKINGS_PAGE.html" class="nav-item">📑 My Bookings</a>
-        <a href="LOGIN_PAGE.html" class="btn-header-action">👤 Sign In</a>
+        <a href="LOGIN_PAGE.html" class="btn-header-action" id="nav-auth-btn">👤 Sign In</a>
       </nav>
     </div>
   </header>
@@ -877,6 +877,34 @@
       <button class="btn-search" onclick="applyFilters()">
         <span>🔍</span> Search
       </button>
+    </div>
+  </div>
+
+  <!-- Logged In User Dashboard Quick Access Banner (Dynamic) -->
+  <div id="user-dashboard-banner" style="max-width: 1240px; margin: -20px auto 35px; padding: 0 20px; display: none;">
+    <div style="background: linear-gradient(135deg, #003580 0%, #00224f 100%); color: #ffffff; padding: 18px 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 6px 20px rgba(0, 53, 128, 0.22); flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: #febb02; color: #000; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" id="user-avatar-initial">
+          H
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 16px; font-weight: 800;" id="user-welcome-name">Welcome back, Himanshu Sanodiya!</span>
+            <span style="background: #febb02; color: #000; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">GENIUS LEVEL 2</span>
+          </div>
+          <div style="font-size: 13px; color: #cbd5e1; margin-top: 2px;" id="user-welcome-sub">
+            Signed in as <strong id="user-display-email">himanshu.travel@gmail.com</strong> • Access your hotel reservations & tax invoices anytime.
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <a href="MY_BOOKINGS_PAGE.html" style="background: #febb02; color: #000; font-weight: 800; font-size: 13px; padding: 10px 18px; border-radius: 6px; text-decoration: none; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+          📑 Open User Dashboard (My Bookings)
+        </a>
+        <a href="LOGIN_PAGE.html" style="background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; font-size: 13px; padding: 10px 14px; border-radius: 6px; text-decoration: none;">
+          Switch Role
+        </a>
+      </div>
     </div>
   </div>
 
@@ -1407,6 +1435,42 @@
 
       cards.forEach(card => container.appendChild(card));
     }
+
+    function checkUserSession() {
+      try {
+        let user = JSON.parse(localStorage.getItem('hotelpro_user'));
+        if (!user) {
+          user = {
+            name: 'Himanshu Sanodiya',
+            email: 'himanshu.travel@gmail.com',
+            role: 'guest',
+            geniusLevel: 2
+          };
+          localStorage.setItem('hotelpro_user', JSON.stringify(user));
+        }
+
+        const banner = document.getElementById('user-dashboard-banner');
+        const navAuthBtn = document.getElementById('nav-auth-btn');
+        const welcomeName = document.getElementById('user-welcome-name');
+        const displayEmail = document.getElementById('user-display-email');
+        const avatarInitial = document.getElementById('user-avatar-initial');
+
+        if (user && banner) {
+          banner.style.display = 'block';
+          if (welcomeName) welcomeName.textContent = `Welcome back, ${user.name}!`;
+          if (displayEmail) displayEmail.textContent = user.email;
+          if (avatarInitial) avatarInitial.textContent = user.name ? user.name[0].toUpperCase() : 'H';
+          if (navAuthBtn) {
+            navAuthBtn.innerHTML = `👤 ${user.name.split(' ')[0]} (Genius 2)`;
+            navAuthBtn.href = 'MY_BOOKINGS_PAGE.html';
+            navAuthBtn.title = 'Click to open User Dashboard';
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    checkUserSession();
   </script>
 </body>
 </html>

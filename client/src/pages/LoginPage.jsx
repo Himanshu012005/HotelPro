@@ -19,12 +19,18 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
+      let authData;
       if (isRegister) {
-        await register({ name, email, password, role });
+        authData = await register({ name, email, password, role });
       } else {
-        await login(email, password);
+        authData = await login(email, password);
       }
-      navigate('/my-bookings');
+      const targetRole = authData?.user?.role || role;
+      if (targetRole === 'admin' || targetRole === 'staff') {
+        navigate('/admin');
+      } else {
+        navigate('/'); // Returns to Front Page with logged-in user profile
+      }
     } catch (err) {
       setError(err.message || 'Authentication failed');
     } finally {

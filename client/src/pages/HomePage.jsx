@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import RoomCard from '../components/RoomCard';
 import { roomService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [category, setCategory] = useState('All Stays');
   const [priceRange, setPriceRange] = useState('');
@@ -74,6 +77,50 @@ export default function HomePage() {
       <div className="container">
         <SearchBar onSearch={handleSearch} />
       </div>
+
+      {/* Logged-In User Dashboard Quick Access Strip */}
+      {user && (
+        <div className="container mt-4">
+          <div
+            className="p-3 rounded-3 shadow-sm text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3"
+            style={{ background: 'linear-gradient(135deg, #003580 0%, #00224f 100%)' }}
+          >
+            <div className="d-flex align-items-center gap-3">
+              <div
+                className="bg-warning text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{ width: '46px', height: '46px', fontSize: '20px' }}
+              >
+                {user.name ? user.name[0].toUpperCase() : 'H'}
+              </div>
+              <div>
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  <h6 className="mb-0 fw-bold fs-6">Welcome back, {user.name}!</h6>
+                  <span className="badge bg-warning text-dark fw-bold" style={{ fontSize: '10px' }}>
+                    GENIUS LEVEL 2 ACTIVE
+                  </span>
+                </div>
+                <div className="text-white-50 small mt-1">
+                  Signed in as <strong>{user.email}</strong> • Role: <span className="text-warning text-capitalize">{user.role}</span>
+                </div>
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              {user.role === 'admin' || user.role === 'staff' ? (
+                <Link to="/admin" className="btn btn-warning btn-sm fw-bold px-3 py-2 rounded-pill shadow-sm">
+                  <i className="bi bi-speedometer2 me-1"></i>Open Staff / Admin Desk
+                </Link>
+              ) : (
+                <Link to="/my-bookings" className="btn btn-warning btn-sm fw-bold px-3 py-2 rounded-pill shadow-sm">
+                  <i className="bi bi-briefcase me-1"></i>Open User Dashboard (My Bookings)
+                </Link>
+              )}
+              <Link to="/rooms" className="btn btn-outline-light btn-sm px-3 py-2 rounded-pill">
+                <i className="bi bi-door-open me-1"></i>All Rooms
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Catalog & Filter Engine */}
       <section className="container my-5">
